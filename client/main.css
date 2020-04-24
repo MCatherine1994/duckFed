@@ -1,0 +1,26 @@
+body {
+  padding: 10px;
+  font-family: sans-serif;
+}
+
+.website-title {
+  background: #4a75a8;
+}
+
+.website-title h2 {
+  padding: 10px;
+  color: rgb(255,255,255);
+}
+
+.website-date {
+  padding: 10px;
+}
+
+.website-date h3 {
+  padding-left: 10px;
+}
+
+.website-date .date-picker {
+  padding-top: 6px;
+  padding-left: 10px;
+}
