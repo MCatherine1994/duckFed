@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import DatePicker from "react-datepicker";
+import { withTracker } from 'meteor/react-meteor-data';
  
+import { fedData } from '../../api/fedData';
+import InputForm, { getDate } from '../components/InputForm';
+
 import "react-datepicker/dist/react-datepicker.css";
 import '../../../node_modules/uikit/dist/css/uikit.min.css';
 
@@ -15,9 +19,35 @@ class Website extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedDate: new Date()
+      selectedDate: new Date(),
+      formatedData: {}
     };
     this.onChange = this.onChange.bind(this);
+    this.renderTable = this.renderTable.bind(this);
+    this.getTableContent = this.getTableContent.bind(this);
+    this.insertData = this.insertData.bind(this);
+  }
+
+  /**
+   * @summary runs after the element is inserted into the tree
+   * @param {state} prevProps previous props
+   * @returns {null} nothing
+   */
+  componentDidUpdate(prevProps) {
+    const { data } = this.props;
+    const transform = {};
+    
+    if (data && (prevProps.data.length === 0 || prevProps.data !== data)&& data.length > 0 ) {
+      data.forEach((record) => {
+        // i.e. record = {date: "20200424", time: "", location: "", duckNum: 30, food: "", foodType: "", foodAmount:""}
+        if (!transform[record.date]) {
+          transform[record.date] = [];
+        }
+        transform[record.date].push(record);
+      });
+      
+      this.setState({ formatedData: transform });
+    }
   }
 
   /**
@@ -30,11 +60,90 @@ class Website extends Component {
   }
 
   /**
+  * @summary Insert new data record to the mongo db
+  * @param {obj} record the new record object
+  * @returns {undefined} Nothing
+  */
+  insertData(record) {
+    fedData.insert(record);
+  }
+
+  /**
+  * @summary get table content
+  * @returns {JSX} The markup for the tabel content
+  */
+  getTableContent() {
+    const { selectedDate, formatedData } = this.state;
+    if (selectedDate && Object.keys(formatedData).length > 0) {
+      const date = getDate(selectedDate);
+      if (formatedData[date] && formatedData[date].length > 0) {
+        return (
+          <tbody>
+            {formatedData[date].map((record) => {
+              return (
+                <tr key={Math.random()}>
+                  <td>{record.location}</td>
+                  <td>{record.duckNum}</td>
+                  <td>{record.time}</td>
+                  <td>{record.food}</td>
+                  <td>{record.foodType}</td>
+                  <td>{record.foodAmount}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        );
+      }
+    }
+    return (
+      <tbody />
+    );
+  }
+
+  /**
+  * @summary render table
+  * @returns {JSX} The markup for the table
+  */
+  renderTable() {
+    const { selectedDate, formatedData } = this.state;
+    let footnote = 'No record for the selected date. Please submit one or switch to another date.';
+    if (selectedDate && Object.keys(formatedData).length > 0) {
+      const date = getDate(selectedDate);
+      if (formatedData[date] && formatedData[date].length > 0) {
+        footnote = '';
+      }
+    }
+
+    return (
+      <React.Fragment>
+        <div className="uk-overflow-auto">
+          <table className="uk-table">
+            <thead>
+              <tr>
+                <th>Location</th>
+                <th>Duck Amount</th>
+                <th>Time</th>
+                <th>Food</th>
+                <th>Food Type</th>
+                <th>Food Amount</th>
+              </tr>
+            </thead>
+            {this.getTableContent()}
+          </table>
+        </div>
+        <p style={{ padding: '10px' }}>{footnote}</p>
+      </React.Fragment>
+    );
+  }
+
+  /**
   * Renders a website component
   * @returns {JSX} returns React element
   */
   render() {
     const { selectedDate } = this.state;
+    const { data } = this.props;
+
     return (
       <div className="website-page uk-container">
         <div className="uk-container website-title uk-flex" uk-grid="">
@@ -42,7 +151,7 @@ class Website extends Component {
         </div>
 
         <div className="uk-container website-date uk-flex">
-          <h3>Please select a date to view or add the data for:</h3>
+          <h3>Please select a date to view or add the record for:</h3>
           <div className="date-picker">
             <DatePicker
               onChange={this.onChange}
@@ -54,12 +163,12 @@ class Website extends Component {
         <div className="website-content uk-grid-medium uk-flex" uk-grid="">
           <div className="data-table uk-width-2-3">
             <div className="uk-card uk-card-default uk-card-body">
-              Table Container
+              {this.renderTable()}
             </div>
           </div>
           <div className="data-input uk-width-1-3">
             <div className="uk-section uk-section-muted">
-              Input Form Container
+              <InputForm callback={this.insertData} />
             </div>
           </div>
         </div>
@@ -67,4 +176,9 @@ class Website extends Component {
     );
   }
 }
-export default Website;
+
+export default withTracker(() => {
+  return {
+    data: fedData.find({}).fetch(),
+  };
+})(Website);

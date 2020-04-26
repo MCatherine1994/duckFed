@@ -24,3 +24,9 @@ body {
   padding-top: 6px;
   padding-left: 10px;
 }
+
+.website-content .data-input .uk-section {
+  padding-top: 50px;
+  padding-left: 40px;
+  padding-right: 40px;
+}
