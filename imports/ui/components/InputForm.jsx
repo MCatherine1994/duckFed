@@ -79,12 +79,12 @@ class InputForm extends Component {
         <fieldset className="uk-fieldset">
           <legend className="uk-legend">Upload New Record</legend>
 
-          {this.getFormField('* Where the ducks are fed?', 'location')}
-          {this.getFormField('* How many ducks are fed?', 'duckNum')}
-          {this.getFormField('* What time the ducks are fed?', 'time')}
-          {this.getFormField('* What food the ducks are fed?', 'food')}
-          {this.getFormField('* What kind of food the ducks are fed?', 'foodType')}
-          {this.getFormField('* How much food the ducks are fed?', 'foodAmount')}
+          {this.getFormField('Where the ducks are fed?', 'location')}
+          {this.getFormField('How many ducks are fed?', 'duckNum')}
+          {this.getFormField('What time the ducks are fed?', 'time')}
+          {this.getFormField('What food the ducks are fed?', 'food')}
+          {this.getFormField('What kind of food the ducks are fed?', 'foodType')}
+          {this.getFormField('How much food the ducks are fed?', 'foodAmount')}
 
           <button className="uk-button uk-button-default">Submit</button>
         </fieldset>
