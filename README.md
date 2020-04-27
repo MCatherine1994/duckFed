@@ -1,5 +1,5 @@
 ## **Duck Fed Statistic Website**
-A Node.js application developed using Meteor Framework with React UI pattern and mongo database. This application stores the duck fed information the user provides from the input form into the mongo database, and display those information on the web page.
+A Node.js application developed using Meteor Framework with React UI pattern and mongo database. This application stores the duck fed information the user provides from the input form into the mongo database, and display those information on the web page. Access to the application: https://duckfed.herokuapp.com
 
 [Screenshot of the page](public/img/pageDemo.png)   
 
