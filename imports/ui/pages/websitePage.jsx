@@ -61,11 +61,13 @@ class Website extends Component {
 
   /**
   * @summary Insert new data record to the mongo db
-  * @param {obj} record the new record object
+  * @param {list} record the new record array
   * @returns {undefined} Nothing
   */
   insertData(record) {
-    fedData.insert(record);
+    record.forEach((data)=> {
+      fedData.insert(data);
+    })
   }
 
   /**
@@ -117,15 +119,15 @@ class Website extends Component {
     return (
       <React.Fragment>
         <div className="uk-overflow-auto">
-          <table className="uk-table">
+          <table className="uk-table uk-table-justify uk-table-middle uk-table-divider uk-table-hover">
             <thead>
               <tr>
-                <th>Location</th>
-                <th>Duck Amount</th>
-                <th>Time</th>
-                <th>Food</th>
-                <th>Food Type</th>
-                <th>Food Amount</th>
+                <th className="uk-width-1-6">Location</th>
+                <th className="uk-width-1-6">Duck Amount</th>
+                <th className="uk-width-1-6">Time</th>
+                <th className="uk-width-1-6">Food</th>
+                <th className="uk-width-1-6">Food Type</th>
+                <th className="uk-width-1-6">Food Amount</th>
               </tr>
             </thead>
             {this.getTableContent()}
@@ -168,7 +170,7 @@ class Website extends Component {
           </div>
           <div className="data-input uk-width-1-3">
             <div className="uk-section uk-section-muted">
-              <InputForm callback={this.insertData} />
+              <InputForm callback={this.insertData} date={selectedDate} />
             </div>
           </div>
         </div>
