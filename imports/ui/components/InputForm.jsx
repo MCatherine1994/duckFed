@@ -62,25 +62,28 @@ class InputForm extends Component {
     const { callback, date } = this.props;
     const { location, duckNum, time, food, foodType, foodAmount, monthData } = this.state;
     const formateDate = getDate(date);
-
-    const newData = [];
-    if (monthData) {
-      const year = Number(formateDate.substring(0, 4));
-      const month = Number(formateDate.substring(4, 6));
-      const days = getDaysInMonth(month, year);
-      for (let i = 1; i <= days; i += 1) {
-        let newDate;
-        if (i < 10) {
-          newDate = formateDate.substring(0, 6) + '0' + i.toString();
-        } else {
-          newDate = formateDate.substring(0, 6) + i.toString();
-        }
-        newData.push({ date: newDate, location, duckNum, time, food, foodType, foodAmount });
-      };
-    } else {
-      newData.push({ date: formateDate, location, duckNum, time, food, foodType, foodAmount });
+    const hasData = (location !== '') || (duckNum !== '') || (time !== '') || (food !== '') ||
+    (foodType !== '') || (foodAmount !== '');
+    if (hasData) {
+      const newData = [];
+      if (monthData) {
+        const year = Number(formateDate.substring(0, 4));
+        const month = Number(formateDate.substring(4, 6));
+        const days = getDaysInMonth(month, year);
+        for (let i = 1; i <= days; i += 1) {
+          let newDate;
+          if (i < 10) {
+            newDate = formateDate.substring(0, 6) + '0' + i.toString();
+          } else {
+            newDate = formateDate.substring(0, 6) + i.toString();
+          }
+          newData.push({ date: newDate, location, duckNum, time, food, foodType, foodAmount });
+        };
+      } else {
+        newData.push({ date: formateDate, location, duckNum, time, food, foodType, foodAmount });
+      }
+      callback(newData);
     }
-    callback(newData);
     document.getElementById("in-form").reset();
     this.setState({ location: '', duckNum: '', time: '', food: '', foodType: '', foodAmount: '' })
   }
